@@ -20,32 +20,38 @@ let messages = [
         author: 'foo',
         text: 'foo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foo',
         time: times[0],
+        isRead: true,
     },
     {
         author: 'foo',
         text:
             'foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo ',
         time: times[0],
+        isRead: true,
     },
     {
         author: 'baz',
         text: 'baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz ',
         time: times[1],
+        isRead: true,
     },
     {
         author: 'baz',
         text: 'baz baz baz',
         time: times[1],
+        isRead: true,
     },
     {
         author: 'bar',
         text: 'bar bar bar',
         time: times[1],
+        isRead: false,
     },
     {
         author: 'foo',
         text: 'foo foo foo',
         time: times[1],
+        isRead: false,
     },
 ]
 
