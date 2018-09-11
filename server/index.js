@@ -11,23 +11,29 @@ app.use((req, res, next) => {
 
 let messages = [
     {
+        author: 'foo',
         text: 'foo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foo',
     },
     {
+        author: 'foo',
         text:
-            'bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar bar ',
+            'foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo ',
     },
     {
+        author: 'baz',
         text: 'baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz ',
     },
     {
+        author: 'baz',
         text: 'baz baz baz',
     },
     {
-        text: 'baz baz baz',
+        author: 'bar',
+        text: 'bar bar bar',
     },
     {
-        text: 'baz baz baz',
+        author: 'foo',
+        text: 'foo foo foo',
     },
 ]
 

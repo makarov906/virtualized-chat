@@ -1,10 +1,18 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from 'react'
+import styled from 'styled-components'
+
+const avatarSize = '32px'
+
+const DefaultAvatar = styled.div`
+    width: ${avatarSize};
+    min-width: ${avatarSize};
+    margin-right: 10px;
+`
 
 const Avatar = styled.div`
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
+    width: ${avatarSize};
+    height: ${avatarSize};
+    min-width: ${avatarSize};
     border-radius: 50%;
     background-color: #00ae29;
     align-self: flex-end;
@@ -25,9 +33,9 @@ const Message = styled.div`
     margin-bottom: 10px;
 `
 
-export default ({ message }) => (
+export default ({ message, withAvatar }) => (
     <Message>
-        <Avatar />
+        {withAvatar ? <Avatar /> : <DefaultAvatar/>}
         <Text>{message.text}</Text>
     </Message>
-);
+)

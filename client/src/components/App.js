@@ -29,9 +29,17 @@ export default class extends Component {
         return (
             <Container>
                 <Chat>
-                    {messages.map(message => (
-                        <Message key={message.id} message={message} />
-                    ))}
+                    {messages.map((message, index, allMessages) => {
+                        if (index === allMessages.length - 1) {
+                            return <Message withAvatar key={message.id} message={message} />
+                        }
+
+                        if (allMessages[index + 1].author !== message.author) {
+                            return <Message withAvatar key={message.id} message={message} />
+                        }
+
+                        return <Message key={message.id} message={message} />
+                    })}
                 </Chat>
             </Container>
         )
