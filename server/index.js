@@ -17,6 +17,12 @@ const times = [
 
 let messages = [
     {
+        author: 'bar',
+        text: 'bar bar barbar bar barbar bar barbar bar barbar bar barbar bar barbar bar barbar bar bar',
+        time: times[0],
+        isRead: true,
+    },
+    {
         author: 'foo',
         text: 'foo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foo',
         time: times[0],

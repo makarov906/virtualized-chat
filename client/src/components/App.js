@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Chat from './Chat'
 
 const Container = styled.div`
-    width: 400px;
+    width: 600px;
     margin: 50px auto 0;
 `
 

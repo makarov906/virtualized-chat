@@ -30,12 +30,13 @@ const Text = styled.div`
 const Message = styled.div`
     display: flex;
     flex-wrap: nowrap;
-    margin-bottom: 10px;
 `
 
-export default ({ message, withAvatar }) => (
-    <Message>
-        {withAvatar ? <Avatar /> : <DefaultAvatar/>}
-        <Text>{message.text}</Text>
-    </Message>
+export default ({ message, withAvatar, ...props }) => (
+    <div style={{ paddingBottom: '10px' }}>
+        <Message {...props}>
+            {withAvatar ? <Avatar /> : <DefaultAvatar />}
+            <Text>{message.text}</Text>
+        </Message>
+    </div>
 )

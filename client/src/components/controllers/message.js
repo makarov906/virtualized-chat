@@ -1,7 +1,6 @@
 import React from 'react'
 import Message from '../Message'
 import moment from 'moment'
-import uuidv4 from 'uuid/v4'
 
 function lessThenMinutes(minutes, time, anotherTime) {
     return moment(parseInt(time)).diff(moment(parseInt(anotherTime)), 'minutes') < minutes
@@ -19,6 +18,6 @@ export default () => {
             withAvatar = false
         }
 
-        return <Message withAvatar={withAvatar} key={uuidv4()} message={message} />
+        return <Message withAvatar={withAvatar} message={message} />
     }
 }
