@@ -1,7 +1,6 @@
 export const getMessages = () =>
     fetch('http://localhost:5000/api/messages')
         .then(res => res.json())
-        .then(res => res.messages)
 
 function cache(func) {
     let cache = {}

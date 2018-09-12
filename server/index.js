@@ -30,8 +30,8 @@ let messages = [
         isRead: true,
     },
     {
-        author: 'baz',
-        text: 'baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz baz ',
+        author: 'foo',
+        text: 'foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo foo ',
         time: times[1],
         isRead: true,
     },
@@ -53,15 +53,28 @@ let messages = [
         time: times[1],
         isRead: false,
     },
+    {
+        author: 'foo',
+        text: 'foo foo foo foo foo foo foo foo foo foo foo foo',
+        time: times[1],
+        isRead: false,
+    },
+    {
+        author: 'baz',
+        text: 'baz baz baz',
+        time: times[1],
+        isRead: false,
+    },
+    {
+        author: 'baz',
+        text: 'baz baz baz',
+        time: times[1],
+        isRead: false,
+    },
 ]
 
-messages = messages.map((m, idx) => ({
-    ...m,
-    id: idx,
-}))
-
-app.get('/api/messages', (req, res) => {
-    res.send({ messages })
+app.get('/api/messages/', (req, res) => {
+    res.send(messages)
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}`))

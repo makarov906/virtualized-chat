@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import uuidv4 from 'uuid/v4'
 
 const NewMessage = styled.div`
     margin: 10px auto;
@@ -16,7 +17,7 @@ export default () => {
     return ({ isRead }) => {
         if (!wasAdded && !isRead) {
             wasAdded = true
-            return <NewMessage>new message</NewMessage>
+            return <NewMessage key={uuidv4()}>new message</NewMessage>
         }
 
         return null
