@@ -18,8 +18,14 @@ export default class VirtualizedList extends Component {
     }
 
     componentDidUpdate(prevProps) {
+        if (prevProps.alignEnd !== this.props.alignEnd) {
+            if (this.props.alignEnd) {
+                this.scrollTo(this.props.list.length)
+            } else {
+                this.scrollTo(0)
+            }
+        }
         if (prevProps.list.length === 0 && this.props.list.length > 0 && this.props.alignEnd) {
-            console.log('componentDidUpdate(prevProps)', this.props.list.length)
             this.scrollTo(this.props.list.length)
         }
     }
@@ -41,8 +47,6 @@ export default class VirtualizedList extends Component {
 
                 if (diff > 0) {
                     this.scrollTo(diff)
-                    // this.list.measureAllRows()
-                    // this.list.scrollToRow(diff)
                     // this.setState({
                     //     scrollToIndex: diff,
                     // })
@@ -94,7 +98,6 @@ export default class VirtualizedList extends Component {
                 <AutoSizer>
                     {({ width, height }) => (
                         <List
-                            // scrollToIndex={this.state.scrollToIndex}
                             scrollToAlignment="start"
                             onScroll={this.onScroll}
                             deferredMeasurementCache={cache}

@@ -15,16 +15,29 @@ export default class extends Component {
         startIndex: 0,
         endIndex: 0,
         focusedMessage: null,
+        isReverse: true,
     }
 
     componentDidMount() {
         this.initialLoad(0)
     }
 
+    switchDirection = () => {
+        this.setState(
+            {
+                isReverse: !this.state.isReverse,
+            },
+            () => {
+                this.initialLoad(0)
+            },
+        )
+    }
+
     initialLoad = messageId => {
         const start = Math.max(0, messageId - rangeLength / 2)
         getMessages(start).then(({ messages, total }) => {
-            if (config.isReverse) {
+            if (this.state.isReverse) {
+                console.log('if (this.state.isReverse)')
                 messages = messages.reverse()
             }
 
@@ -83,6 +96,11 @@ export default class extends Component {
     }
 
     render() {
+        const loadTop = this.state.isReverse ? this.reverseLoadTop : this.loadTop
+        const loadBottom = this.state.isReverse ? this.reverseLoadBottom : this.loadBottom
+        const hasBottom = this.state.isReverse ? this.state.startIndex > 0 : this.state.endIndex < this.state.total
+        const hasTop = this.state.isReverse ? this.state.endIndex < this.state.total : this.state.startIndex > 0
+
         const markup = []
         const addDate = createDateController(markup)
         const addUnreadLable = createUnreadLabelController(markup)
@@ -99,17 +117,23 @@ export default class extends Component {
         }
 
         return (
-            <div style={{ border: '2px solid black' }}>
-                <VirtualizedList
-                    alignEnd
-                    height={404}
-                    loadTop={config.isReverse ? this.reverseLoadTop : this.loadTop}
-                    loadBottom={config.isReverse ? this.reverseLoadBottom : this.loadBottom}
-                    list={markup}
-                    total={this.state.total}
-                    hasBottom={config.isReverse ? this.state.startIndex > 0 : this.state.endIndex < this.state.total}
-                    hasTop={config.isReverse ? this.state.endIndex < this.state.total : this.state.startIndex > 0}
-                />
+            <div>
+                <div style={{ border: '2px solid black' }}>
+                    <VirtualizedList
+                        {...this.state.isReverse && { alignEnd: true }}
+                        height={404}
+                        loadTop={loadTop}
+                        loadBottom={loadBottom}
+                        list={markup}
+                        total={this.state.total}
+                        hasBottom={hasBottom}
+                        hasTop={hasTop}
+                    />
+                </div>
+                <label>
+                    <input type="checkbox" onChange={this.switchDirection} />
+                    <span>IsReverse ?</span>
+                </label>
             </div>
         )
     }
