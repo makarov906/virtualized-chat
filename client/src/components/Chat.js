@@ -8,6 +8,14 @@ import VirtualizedList from './VirtualizedList'
 
 const rangeLength = config.rangeLength
 
+const textes = [
+    'bra',
+    'brabrabra',
+    'brabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabra',
+    'brabrabrabrabrabrabrabrabrabrabrabrabrabrabra',
+    'brabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabrabra',
+]
+
 export default class extends Component {
     state = {
         list: [],
@@ -20,6 +28,21 @@ export default class extends Component {
 
     componentDidMount() {
         this.initialLoad(0)
+        let index = 0
+        setInterval(() => {
+            const list = this.state.list
+            const listIndex = list.length - 1
+            list[listIndex].text = textes[index % textes.length]
+            index++
+            this.setState(
+                {
+                    list,
+                },
+                () => {
+                    this.list.recomputeHeight(listIndex)
+                },
+            )
+        }, 2000)
     }
 
     switchDirection = () => {
@@ -37,7 +60,6 @@ export default class extends Component {
         const start = Math.max(0, messageId - rangeLength / 2)
         getMessages(start).then(({ messages, total }) => {
             if (this.state.isReverse) {
-                console.log('if (this.state.isReverse)')
                 messages = messages.reverse()
             }
 
@@ -121,7 +143,8 @@ export default class extends Component {
                 <div style={{ border: '2px solid black' }}>
                     <VirtualizedList
                         {...this.state.isReverse && { alignEnd: true }}
-                        height={404}
+                        ref={ref => (this.list = ref)}
+                        height="100vh"
                         loadTop={loadTop}
                         loadBottom={loadBottom}
                         list={markup}

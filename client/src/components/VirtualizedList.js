@@ -17,6 +17,12 @@ export default class VirtualizedList extends Component {
         listLength: 0,
     }
 
+    // recompute height for index, when content was changed
+    recomputeHeight = (index) => {
+        cache.clear(index, 0)
+        this.list.recomputeRowHeights(index)
+    }
+
     componentDidUpdate(prevProps) {
         if (prevProps.alignEnd !== this.props.alignEnd) {
             if (this.props.alignEnd) {
@@ -47,9 +53,6 @@ export default class VirtualizedList extends Component {
 
                 if (diff > 0) {
                     this.scrollTo(diff)
-                    // this.setState({
-                    //     scrollToIndex: diff,
-                    // })
                 }
 
                 this.setState({
@@ -72,7 +75,7 @@ export default class VirtualizedList extends Component {
         }
     }
 
-    rowRenderer = ({ index, key, style, parent, isVisible }) => {
+    rowRenderer = ({ index, key, style, parent }) => {
         let content = this.props.list[index]
 
         return (
