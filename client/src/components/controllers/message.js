@@ -6,8 +6,8 @@ function lessThenMinutes(minutes, time, anotherTime) {
     return moment(parseInt(time)).diff(moment(parseInt(anotherTime)), 'minutes') < minutes
 }
 
-export default () => {
-    return (message, nextMessage) => {
+export default arr => {
+    return (message, nextMessage, isFocused) => {
         let withAvatar = true
 
         if (
@@ -18,6 +18,6 @@ export default () => {
             withAvatar = false
         }
 
-        return <Message withAvatar={withAvatar} message={message} />
+        arr.push(<Message isFocused={isFocused} withAvatar={withAvatar} message={message} />)
     }
 }

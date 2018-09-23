@@ -1,88 +1,87 @@
 import React, { Component } from 'react'
-import styled from 'styled-components'
-import dateController from './controllers/date'
-import unreadLabelController from './controllers/unreadLabel'
-import messageController from './controllers/message'
+import createDateController from './controllers/date'
+import createUnreadLabelController from './controllers/unreadLabel'
+import createMessageController from './controllers/message'
 import { getMessages } from '../utils'
-import Messages from './Messages'
+import config from '../config'
+import VirtualizedList from './VirtualizedList'
 
-const createChat = messages => {
-    const addDate = dateController()
-    const addUnreadLabel = unreadLabelController()
-    const addMessage = messageController()
-
-    return messages
-        .reduce(
-            (markup, message, idx) =>
-                markup.concat([addDate(message), addUnreadLabel(message), addMessage(message, messages[idx + 1])]),
-            [],
-        )
-        .filter(item => item)
-}
-
-const Chat = styled.div`
-    padding: 0 60px;
-    height: 500px;
-    background-color: #fff;
-`
+const rangeLength = config.rangeLength
 
 export default class extends Component {
     state = {
-        loading: false,
-        chat: [],
-        messages: [],
-        row: '',
+        list: [],
+        total: 0,
+        startIndex: 0,
+        endIndex: 0,
+        focusedMessage: null,
     }
 
-    onChange = e => {
-        this.setState({
-            row: e.target.value,
-        })
+    componentDidMount() {
+        this.initialLoad(15)
     }
 
-    loadMoreRows = ({ startIndex, stopIndex }) => {
-        this.setState({
-            loading: true,
-        })
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve()
-            }, 2000)
-        })
-            .then(() => getMessages())
-            .then(items => {
-                this.setState(prevState => {
-                    const newMessages = prevState.messages.concat(items)
-
-                    return {
-                        loading: false,
-                        messages: newMessages,
-                        chat: createChat(newMessages),
-                    }
-                })
+    initialLoad = messageId => {
+        const start = Math.max(0, messageId - rangeLength / 2)
+        getMessages(start).then(({ messages, total }) => {
+            this.setState({
+                list: messages,
+                total,
+                startIndex: start,
+                endIndex: Math.min(total, start + messages.length),
+                focusedMessage: messageId,
             })
+        })
     }
 
-    goto = () => {
-        const row = parseInt(this.state.row)
+    loadTop = () => {
+        const start = Math.max(0, this.state.startIndex - rangeLength)
+        return getMessages(start).then(({ messages, total }) => {
+            this.setState(prevState => ({
+                list: messages.concat(prevState.list),
+                total,
+                startIndex: start,
+            }))
+        })
+    }
 
-        this.list.scrollToRow(row)
+    loadBottom = () => {
+        return getMessages(this.state.endIndex).then(({ messages, total }) => {
+            this.setState(prevState => ({
+                list: prevState.list.concat(messages),
+                total,
+                endIndex: Math.min(total, prevState.endIndex + messages.length),
+            }))
+        })
     }
 
     render() {
+        const markup = []
+        const addDate = createDateController(markup)
+        const addUnreadLable = createUnreadLabelController(markup)
+        const addMessage = createMessageController(markup)
+
+        for (let i = 0; i < this.state.list.length; i++) {
+            const message = this.state.list[i]
+            const prevMessage = this.state.list[i - 1]
+            const nextMessage = this.state.list[i + 1]
+
+            addDate(message)
+            addUnreadLable(prevMessage, message)
+            addMessage(message, nextMessage, message.id === 10)
+        }
+
         return (
-            <div>
-                <Chat>
-                    <Messages
-                        hasNextPage={true}
-                        isNextPageLoading={this.state.loading}
-                        list={this.state.chat}
-                        loadNextPage={this.loadMoreRows}
-                        innerRef={list => (this.list = list)}
-                    />
-                </Chat>
-                <button onClick={this.goto}>Go to</button>
-                <input type="number" value={this.state.row} onChange={this.onChange} />
+            <div style={{ border: '2px solid black' }}>
+                <VirtualizedList
+                    height={404}
+                    loadTop={this.loadTop}
+                    loadBottom={this.loadBottom}
+                    list={markup}
+                    total={this.state.total}
+                    hasBottom={this.state.endIndex < this.state.total}
+                    hasTop={this.state.startIndex > 0}
+                />
             </div>
         )
     }

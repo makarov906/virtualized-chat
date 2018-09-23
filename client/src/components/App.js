@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import Chat from './Chat'
 
 const Container = styled.div`
-    width: 600px;
-    margin: 50px auto 0;
+    padding: 0 120px;
 `
 
 export default class extends Component {

@@ -32,11 +32,16 @@ const Message = styled.div`
     flex-wrap: nowrap;
 `
 
-export default ({ message, withAvatar, ...props }) => (
-    <div style={{ paddingBottom: '10px' }}>
+const Wrapper = styled.div`
+    padding-bottom: 10px;
+    background-color: ${props => props.isFocused ? 'rgba(0, 0, 0, 0.2)' : ''};
+`
+
+export default ({ message, withAvatar, isFocused, ...props }) => (
+    <Wrapper isFocused={isFocused}>
         <Message {...props}>
             {withAvatar ? <Avatar /> : <DefaultAvatar />}
             <Text>{message.text}</Text>
         </Message>
-    </div>
+    </Wrapper>
 )

@@ -79,6 +79,8 @@ let messages = [
     },
 ]
 
+messages = messages.concat(messages)
+
 app.get('/api/messages/', (req, res) => {
     res.send(messages)
 })

@@ -7,21 +7,17 @@ const NewMessage = styled.div`
     border-radius: 20px;
     padding: 5px;
     background-color: rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
 `
 
-export default () => {
-    let wasAdded = false
-
-    return ({ isRead }) => {
-        if (!wasAdded && !isRead) {
-            wasAdded = true
-            return (
-                <div style={{ padding: '10px 0', textAlign: 'center' }}>
+export default arr => {
+    return (prevMessage, message) => {
+        if ((!prevMessage || prevMessage.isRead) && !message.isRead) {
+            arr.push(
+                <div style={{ padding: '10px 0' }}>
                     <NewMessage>new message</NewMessage>
                 </div>
             )
         }
-
-        return null
     }
 }

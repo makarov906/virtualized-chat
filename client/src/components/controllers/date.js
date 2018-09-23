@@ -8,19 +8,17 @@ const Date = styled.div`
     text-decoration: underline;
 `
 
-export default () => {
+export default arr => {
     let currentDate
 
     return ({ time }) => {
         if (currentDate !== time) {
             currentDate = time
-            return (
+            arr.push(
                 <div style={{ padding: '10px 0' }}>
                     <Date>{moment(parseInt(time)).format('DD MM YYYY')}</Date>
                 </div>
             )
         }
-
-        return null
     }
 }
