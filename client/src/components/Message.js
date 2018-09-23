@@ -41,7 +41,7 @@ export default ({ message, withAvatar, isFocused, ...props }) => (
     <Wrapper isFocused={isFocused}>
         <Message {...props}>
             {withAvatar ? <Avatar /> : <DefaultAvatar />}
-            <Text>{message.text}</Text>
+            <Text>{message.id} {message.text}</Text>
         </Message>
     </Wrapper>
 )

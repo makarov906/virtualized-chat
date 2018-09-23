@@ -18,19 +18,46 @@ export default class extends Component {
     }
 
     componentDidMount() {
-        this.initialLoad(15)
+        this.initialLoad(0)
     }
 
     initialLoad = messageId => {
         const start = Math.max(0, messageId - rangeLength / 2)
         getMessages(start).then(({ messages, total }) => {
+            if (config.isReverse) {
+                messages = messages.reverse()
+            }
+
             this.setState({
                 list: messages,
                 total,
                 startIndex: start,
-                endIndex: Math.min(total, start + messages.length),
+                endIndex: start + messages.length,
                 focusedMessage: messageId,
             })
+        })
+    }
+
+    reverseLoadTop = () => {
+        return getMessages(this.state.endIndex).then(({ messages, total }) => {
+            messages = messages.reverse()
+            this.setState(prevState => ({
+                list: messages.concat(prevState.list),
+                total,
+                endIndex: prevState.endIndex + messages.length,
+            }))
+        })
+    }
+
+    reverseLoadBottom = () => {
+        const start = Math.max(0, this.state.startIndex - rangeLength)
+        return getMessages(start).then(({ messages, total }) => {
+            messages = messages.reverse()
+            this.setState(prevState => ({
+                list: prevState.list.concat(messages),
+                total,
+                startIndex: start,
+            }))
         })
     }
 
@@ -50,7 +77,7 @@ export default class extends Component {
             this.setState(prevState => ({
                 list: prevState.list.concat(messages),
                 total,
-                endIndex: Math.min(total, prevState.endIndex + messages.length),
+                endIndex: prevState.endIndex + messages.length,
             }))
         })
     }
@@ -74,13 +101,14 @@ export default class extends Component {
         return (
             <div style={{ border: '2px solid black' }}>
                 <VirtualizedList
+                    alignEnd
                     height={404}
-                    loadTop={this.loadTop}
-                    loadBottom={this.loadBottom}
+                    loadTop={config.isReverse ? this.reverseLoadTop : this.loadTop}
+                    loadBottom={config.isReverse ? this.reverseLoadBottom : this.loadBottom}
                     list={markup}
                     total={this.state.total}
-                    hasBottom={this.state.endIndex < this.state.total}
-                    hasTop={this.state.startIndex > 0}
+                    hasBottom={config.isReverse ? this.state.startIndex > 0 : this.state.endIndex < this.state.total}
+                    hasTop={config.isReverse ? this.state.endIndex < this.state.total : this.state.startIndex > 0}
                 />
             </div>
         )

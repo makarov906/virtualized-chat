@@ -18,14 +18,15 @@ export default class VirtualizedList extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const diff = this.props.list.length - prevProps.list.length
-        if (diff > 0) {
-            this.list.measureAllRows()
-            this.list.scrollToRow(diff)
-            this.setState({
-                scrollToIndex: diff,
-            })
+        if (prevProps.list.length === 0 && this.props.list.length > 0 && this.props.alignEnd) {
+            console.log('componentDidUpdate(prevProps)', this.props.list.length)
+            this.scrollTo(this.props.list.length)
         }
+    }
+
+    scrollTo = (index) => {
+        this.list.measureAllRows()
+        this.list.scrollToRow(index)
     }
 
     loadTop = () => {
@@ -33,7 +34,20 @@ export default class VirtualizedList extends Component {
             this.setState({
                 loadingTop: true,
             })
+            const prevLength = this.props.list.length
             this.props.loadTop().then(() => {
+                const newLength = this.props.list.length
+                const diff = newLength - prevLength
+
+                if (diff > 0) {
+                    this.scrollTo(diff)
+                    // this.list.measureAllRows()
+                    // this.list.scrollToRow(diff)
+                    // this.setState({
+                    //     scrollToIndex: diff,
+                    // })
+                }
+
                 this.setState({
                     loadingTop: false,
                 })
@@ -80,9 +94,8 @@ export default class VirtualizedList extends Component {
                 <AutoSizer>
                     {({ width, height }) => (
                         <List
-                            scrollToIndex={this.state.scrollToIndex}
+                            // scrollToIndex={this.state.scrollToIndex}
                             scrollToAlignment="start"
-                            className="chat-list"
                             onScroll={this.onScroll}
                             deferredMeasurementCache={cache}
                             rowCount={this.props.list.length}
