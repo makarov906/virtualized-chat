@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Controller from './controller'
+import Controller from '../controller'
 import { getMessages } from '../utils'
 import VirtualizedList from './VirtualizedList'
 
@@ -35,8 +35,6 @@ export default class extends Component {
                     list={markup}
                     total={this.state.total}
                 />
-
-                {/*<button onClick={() => this.list.goto(50)}>goto 50 message</button>*/}
             </div>
         )
     }

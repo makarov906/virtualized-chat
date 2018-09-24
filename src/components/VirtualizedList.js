@@ -23,7 +23,6 @@ export default class VirtualizedList extends Component {
     }
 
     // recompute height for index, when content was changed
-    // todo
     recomputeHeight = index => {
         cache.clear(index, 0)
         this.list.recomputeRowHeights(index)

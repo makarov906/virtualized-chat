@@ -1,10 +1,11 @@
 import React from 'react'
 import moment from 'moment'
-import Message from './Message'
-import Date from './Date'
-import UnreadLabel from './UnreadLabel'
+import Message from './components/Message'
+import Date from './components/Date'
+import UnreadLabel from './components/UnreadLabel'
 
 export default class Controller {
+    // todo store message position
     mapMessageToRow = {}
 
     createMarkup(list) {
