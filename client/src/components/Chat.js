@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import createDateController from './controllers/date'
-import createUnreadLabelController from './controllers/unreadLabel'
-import createMessageController from './controllers/message'
+import Controller from './controller'
 import { getMessages } from '../utils'
 import VirtualizedList from './VirtualizedList'
+
+const controller = new Controller()
 
 export default class extends Component {
     state = {
@@ -23,20 +23,7 @@ export default class extends Component {
     }
 
     render() {
-        const markup = []
-        const addDate = createDateController(markup)
-        const addUnreadLable = createUnreadLabelController(markup)
-        const addMessage = createMessageController(markup)
-
-        for (let i = 0; i < this.state.list.length; i++) {
-            const message = this.state.list[i]
-            const prevMessage = this.state.list[i - 1]
-            const nextMessage = this.state.list[i + 1]
-
-            addDate(message)
-            addUnreadLable(prevMessage, message)
-            addMessage(message, nextMessage, message.id === 10)
-        }
+        const markup = controller.createMarkup(this.state.list)
 
         return (
             <div style={{ border: '2px solid black', height: '100vh' }}>
@@ -49,7 +36,7 @@ export default class extends Component {
                     total={this.state.total}
                 />
 
-                <button onClick={() => this.list.goto(50)}>goto 50 message</button>
+                {/*<button onClick={() => this.list.goto(50)}>goto 50 message</button>*/}
             </div>
         )
     }

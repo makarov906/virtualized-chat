@@ -1,5 +1,3 @@
-import config from './config'
-
 const moment = require('moment')
 const times = [moment('20180911', 'YYYYMMDD').format('x'), moment('20180910', 'YYYYMMDD').format('x')]
 
@@ -57,13 +55,13 @@ const messages = [
         author: 'baz',
         text: 'baz baz baz',
         time: times[1],
-        isRead: false,
+        isRead: true,
     },
     {
         author: 'BORDER',
         text: '+++++++++++++++++++++++++ BORDER +++++++++++++++++++++++++++++++++++++',
         time: times[1],
-        isRead: false,
+        isRead: true,
     },
 ]
 
@@ -78,5 +76,5 @@ export const getMessages = (start, end) =>
                 messages: res,
                 total: 100,
             })
-        }, config.serverDelay)
+        }, 200)
     })

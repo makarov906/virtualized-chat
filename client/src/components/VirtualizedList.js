@@ -121,9 +121,14 @@ export default class VirtualizedList extends Component {
         }
     }
 
+    onResize = () => {
+        cache.clearAll()
+        this.list.recomputeRowHeights()
+    }
+
     render() {
         return (
-            <AutoSizer>
+            <AutoSizer onResize={this.onResize}>
                 {({ width, height }) => (
                     <List
                         scrollToAlignment="start"

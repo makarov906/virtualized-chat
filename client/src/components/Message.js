@@ -22,7 +22,7 @@ const Avatar = styled.div`
 const Text = styled.div`
     font-size: 14px;
     padding: 10px;
-    border: 1px solid #00ae29;
+    border: 1px solid ${props => (props.isRead ? '#00ae29' : 'red')};
     border-radius: 5px;
     flex-grow: 1;
 `
@@ -34,14 +34,14 @@ const Message = styled.div`
 
 const Wrapper = styled.div`
     padding-bottom: 10px;
-    background-color: ${props => props.isFocused ? 'rgba(0, 0, 0, 0.2)' : ''};
+    background-color: ${props => (props.isFocused ? 'rgba(0, 0, 0, 0.2)' : '')};
 `
 
 export default ({ message, withAvatar, isFocused, ...props }) => (
     <Wrapper isFocused={isFocused}>
         <Message {...props}>
             {withAvatar ? <Avatar /> : <DefaultAvatar />}
-            <Text>{message.id} {message.text}</Text>
+            <Text isRead={message.isRead}> {message.text}</Text>
         </Message>
     </Wrapper>
 )
