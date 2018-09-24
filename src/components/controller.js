@@ -38,6 +38,6 @@ function shouldAddUnreadLabel(prev = {}, current = {}) {
 function shouldAddAvatar(current = {}, next = {}) {
     return (
         next.author === current.author &&
-        moment(parseInt(current.time)).diff(moment(parseInt(next.time)), 'minutes') < 15
+        moment(parseInt(next.time)).diff(moment(parseInt(current.time)), 'minutes') < 15
     )
 }

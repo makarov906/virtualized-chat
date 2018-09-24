@@ -2,7 +2,8 @@
 
 Для запуска 
 ```
-npm run dev
+npm i
+npm start
 localhost:3000
 ```
 

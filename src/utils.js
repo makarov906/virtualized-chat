@@ -1,24 +1,10 @@
-const express = require('express')
-const moment = require('moment')
+import moment from 'moment'
+const times = [moment('20180911', 'YYYYMMDD').format('x'), moment('20180910', 'YYYYMMDD').format('x')]
 
-const app = express()
-const port = process.env.PORT || 5000
-
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    next()
-})
-
-const times = [
-    moment('20180911', 'YYYYMMDD').format('x'),
-    moment('20180910', 'YYYYMMDD').format('x'),
-]
-
-let messages = [
+const messages = [
     {
-        author: 'bar',
-        text: 'bar bar barbar bar barbar bar barbar bar barbar bar barbar bar barbar bar barbar bar bar',
+        author: 'BORDER',
+        text: '+++++++++++++++++++++++++ BORDER +++++++++++++++++++++++++++++++++++++',
         time: times[0],
         isRead: true,
     },
@@ -48,12 +34,6 @@ let messages = [
         isRead: true,
     },
     {
-        author: 'bar',
-        text: 'bar bar bar',
-        time: times[1],
-        isRead: false,
-    },
-    {
         author: 'foo',
         text: 'foo foo foo',
         time: times[1],
@@ -75,14 +55,26 @@ let messages = [
         author: 'baz',
         text: 'baz baz baz',
         time: times[1],
-        isRead: false,
+        isRead: true,
+    },
+    {
+        author: 'BORDER',
+        text: '+++++++++++++++++++++++++ BORDER +++++++++++++++++++++++++++++++++++++',
+        time: times[1],
+        isRead: true,
     },
 ]
 
-messages = messages.concat(messages)
-
-app.get('/api/messages/', (req, res) => {
-    res.send(messages)
-})
-
-app.listen(port, () => console.log(`Listening on port ${port}`))
+export const getMessages = (start, end) =>
+    new Promise(resolve => {
+        const res = messages.map((m, i) => ({
+            ...m,
+            id: start + i
+        }))
+        setTimeout(() => {
+            resolve({
+                messages: res,
+                total: 100,
+            })
+        }, 200)
+    })
