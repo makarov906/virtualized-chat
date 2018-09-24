@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { AutoSizer, List, CellMeasurerCache, CellMeasurer } from 'react-virtualized'
-import config from '../config'
-const threshold = config.thresholdInPixels
 
 const cache = new CellMeasurerCache({
     minHeight: 50,
@@ -10,44 +8,77 @@ const cache = new CellMeasurerCache({
 })
 
 export default class VirtualizedList extends Component {
+    static defaultProps = {
+        batchSize: 10,
+        threshold: 50,
+        startFrom: 0,
+        alignEnd: true,
+    }
+
     state = {
-        loadingTop: false,
-        loadingBottom: false,
+        loading: false,
         scrollToIndex: -1,
-        listLength: 0,
+        startIndex: 0,
+        endIndex: 0,
     }
 
     // recompute height for index, when content was changed
-    recomputeHeight = (index) => {
+    // todo
+    recomputeHeight = index => {
         cache.clear(index, 0)
         this.list.recomputeRowHeights(index)
     }
 
+    // todo
+    goto = index => {}
+
+    componentDidMount() {
+        this.setState({
+            loading: true,
+        })
+        this.props
+            .fetchMore(this.props.startFrom, this.props.startFrom + this.props.batchSize, messages =>
+                messages.reverse(),
+            )
+            .then(messagesLength => {
+                this.setState({
+                    startIndex: this.props.startFrom,
+                    endIndex: this.props.startFrom + messagesLength,
+                    loading: false,
+                })
+            })
+    }
+
     componentDidUpdate(prevProps) {
-        if (prevProps.alignEnd !== this.props.alignEnd) {
-            if (this.props.alignEnd) {
-                this.scrollTo(this.props.list.length)
-            } else {
-                this.scrollTo(0)
-            }
-        }
         if (prevProps.list.length === 0 && this.props.list.length > 0 && this.props.alignEnd) {
             this.scrollTo(this.props.list.length)
         }
     }
 
-    scrollTo = (index) => {
+    scrollTo = index => {
         this.list.measureAllRows()
         this.list.scrollToRow(index)
     }
 
-    loadTop = () => {
-        if (!this.state.loadingTop && this.props.hasTop) {
-            this.setState({
-                loadingTop: true,
-            })
-            const prevLength = this.props.list.length
-            this.props.loadTop().then(() => {
+    rowRenderer = ({ index, key, style, parent }) => {
+        return (
+            <CellMeasurer cache={cache} columnIndex={0} key={key} rowIndex={index} parent={parent}>
+                <div style={style}>{this.props.list[index]}</div>
+            </CellMeasurer>
+        )
+    }
+
+    _loadTop = () => {
+        const start = this.state.endIndex
+        this.setState({
+            loading: true,
+        })
+        const prevLength = this.props.list.length
+        this.props
+            .fetchMore(start, start + this.props.batchSize, (messages, prevMessages) =>
+                messages.reverse().concat(prevMessages),
+            )
+            .then(messagesLength => {
                 const newLength = this.props.list.length
                 const diff = newLength - prevLength
 
@@ -56,66 +87,59 @@ export default class VirtualizedList extends Component {
                 }
 
                 this.setState({
-                    loadingTop: false,
+                    loading: false,
+                    endIndex: start + messagesLength,
                 })
             })
-        }
     }
 
-    loadBottom = () => {
-        if (!this.state.loadingBottom && this.props.hasBottom) {
-            this.setState({
-                loadingBottom: true,
-            })
-            this.props.loadBottom().then(() => {
-                this.setState({
-                    loadingBottom: false,
-                })
-            })
-        }
-    }
-
-    rowRenderer = ({ index, key, style, parent }) => {
-        let content = this.props.list[index]
-
-        return (
-            content && (
-                <CellMeasurer cache={cache} columnIndex={0} key={key} rowIndex={index} parent={parent}>
-                    <div style={style}>{content}</div>
-                </CellMeasurer>
+    _loadBottom = () => {
+        const start = Math.max(0, this.state.startIndex - this.props.batchSize)
+        this.setState({
+            loading: true,
+        })
+        this.props
+            .fetchMore(start, start + this.props.batchSize, (messages, prevMessages) =>
+                prevMessages.concat(messages.reverse()),
             )
-        )
+            .then(messagesLength => {
+                this.setState({
+                    loading: false,
+                    startIndex: start,
+                })
+            })
     }
 
     onScroll = ({ clientHeight, scrollHeight, scrollTop }) => {
-        if (scrollTop < threshold) {
-            this.loadTop()
-        } else if (scrollHeight - scrollTop - clientHeight < threshold) {
-            this.loadBottom()
+        if (!this.state.loading) {
+            if (scrollTop < this.props.threshold && this.state.endIndex < this.props.total) {
+                this._loadTop()
+            }
+            if (scrollHeight - scrollTop - clientHeight < this.props.threshold && this.state.startIndex > 0) {
+                this._loadBottom()
+            }
         }
     }
 
     render() {
         return (
-            <div style={{ height: this.props.height }}>
-                <AutoSizer>
-                    {({ width, height }) => (
-                        <List
-                            scrollToAlignment="start"
-                            onScroll={this.onScroll}
-                            deferredMeasurementCache={cache}
-                            rowCount={this.props.list.length}
-                            rowHeight={cache.rowHeight}
-                            rowRenderer={this.rowRenderer}
-                            width={width}
-                            height={height}
-                            ref={list => {
-                                this.list = list
-                            }}
-                        />
-                    )}
-                </AutoSizer>
-            </div>
+            <AutoSizer>
+                {({ width, height }) => (
+                    <List
+                        scrollToAlignment="start"
+                        onScroll={this.onScroll}
+                        deferredMeasurementCache={cache}
+                        rowCount={this.props.list.length}
+                        rowHeight={cache.rowHeight}
+                        rowRenderer={this.rowRenderer}
+                        width={width}
+                        height={height}
+                        ref={list => {
+                            this.list = list
+                        }}
+                    />
+                )}
+            </AutoSizer>
         )
     }
 }

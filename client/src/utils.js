@@ -67,7 +67,7 @@ const messages = [
     },
 ]
 
-export const getMessages = (start, length = config.rangeLength) =>
+export const getMessages = (start, end) =>
     new Promise(resolve => {
         const res = messages.map((m, i) => ({
             ...m,
