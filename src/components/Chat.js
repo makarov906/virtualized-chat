@@ -8,17 +8,18 @@ export default class extends Component {
         markup: [],
     }
 
+    // public api
     goto = index => {
-        if (!this.props.controller.hasRowFor(index)) {
-            this.list.initialize(index).then(() => {
-                this.highliteMessage(index)
-            })
+        if (this.props.controller.hasRowFor(index)) {
+            this.highliteMessageAndScroll(index)
         } else {
-            this.highliteMessage(index)
+            this.list.initialize(index).then(() => {
+                this.highliteMessageAndScroll(index)
+            })
         }
     }
 
-    highliteMessage = index => {
+    highliteMessageAndScroll = index => {
         this.setState(prevState => {
             const newList =  prevState.list.map((m) => index === m.id ? ({
                 ...m,
