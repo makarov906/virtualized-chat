@@ -5,23 +5,29 @@ import Date from './components/Date'
 import UnreadLabel from './components/UnreadLabel'
 
 export default class Controller {
-    // todo store message position
     mapMessageToRow = {}
 
     createMarkup(list) {
         const markup = []
+        this.mapMessageToRow = {}
+        let position = 0
 
         for (let i = 0; i < list.length; i++) {
+
             if (shouldAddDate(list[i - 1], list[i])) {
                 markup.push(<Date message={list[i]} />)
+                position++
             }
 
             if (shouldAddUnreadLabel(list[i - 1], list[i])) {
                 markup.push(<UnreadLabel />)
+                position++
             }
 
             let withAvatar = shouldAddAvatar(list[i], list[i + 1])
             markup.push(<Message withAvatar={withAvatar} message={list[i]} />)
+            this.mapMessageToRow[list[i].id] = position
+            position++
         }
 
         return markup

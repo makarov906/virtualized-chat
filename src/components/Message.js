@@ -35,13 +35,14 @@ const Message = styled.div`
 const Wrapper = styled.div`
     padding-bottom: 10px;
     background-color: ${props => (props.isFocused ? 'rgba(0, 0, 0, 0.2)' : '')};
+    transition: all 0.4s;
 `
 
-export default ({ message, withAvatar, isFocused, ...props }) => (
-    <Wrapper isFocused={isFocused}>
+export default ({ message, withAvatar, ...props }) => (
+    <Wrapper isFocused={message.isFocused}>
         <Message {...props}>
             {withAvatar ? <Avatar /> : <DefaultAvatar />}
-            <Text isRead={message.isRead}> {message.text}</Text>
+            <Text isRead={message.isRead}>{message.text}</Text>
         </Message>
     </Wrapper>
 )

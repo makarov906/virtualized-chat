@@ -28,8 +28,34 @@ export default class VirtualizedList extends Component {
         this.list.recomputeRowHeights(index)
     }
 
-    // todo
-    goto = index => {}
+    // force update list
+    update = () => {
+        this.list.forceUpdateGrid()
+    }
+
+    // go to the certain message
+    goto = (index, mapIndexToRow) => {
+        if (!mapIndexToRow[index]) {
+            this.setState({
+                loading: true,
+            })
+            const start = Math.max(0, index)
+            const end = Math.min(this.props.total, index + this.props.batchSize)
+            return this.props.fetchMore(start, end, (messages) => messages.reverse()).then(messagesLength => {
+                this.setState({
+                    startIndex: index,
+                    endIndex: index + messagesLength,
+                    loading: false,
+                })
+            }).then(() => {
+                this.scrollTo(index)
+            })
+        }
+        return new Promise(resolve => {
+            this.scrollTo(mapIndexToRow[index])
+            resolve()
+        })
+    }
 
     componentDidMount() {
         this.setState({
