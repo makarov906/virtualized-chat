@@ -33,42 +33,22 @@ export default class VirtualizedList extends Component {
         this.list.forceUpdateGrid()
     }
 
-    // go to the certain message
-    goto = (index, mapIndexToRow) => {
-        if (!mapIndexToRow[index]) {
-            this.setState({
-                loading: true,
-            })
-            const start = Math.max(0, index)
-            const end = Math.min(this.props.total, index + this.props.batchSize)
-            return this.props.fetchMore(start, end, (messages) => messages.reverse()).then(messagesLength => {
-                this.setState({
-                    startIndex: index,
-                    endIndex: index + messagesLength,
-                    loading: false,
-                })
-            }).then(() => {
-                this.scrollTo(index)
-            })
-        }
-        return new Promise(resolve => {
-            this.scrollTo(mapIndexToRow[index])
-            resolve()
-        })
+    componentDidMount() {
+        this.initialize(this.props.startFrom)
     }
 
-    componentDidMount() {
+    initialize = (index) => {
         this.setState({
             loading: true,
         })
-        this.props
-            .fetchMore(this.props.startFrom, this.props.startFrom + this.props.batchSize, messages =>
+        return this.props
+            .fetchMore(index, index + this.props.batchSize, messages =>
                 messages.reverse(),
             )
             .then(messagesLength => {
                 this.setState({
-                    startIndex: this.props.startFrom,
-                    endIndex: this.props.startFrom + messagesLength,
+                    startIndex: index,
+                    endIndex: index + messagesLength,
                     loading: false,
                 })
             })
@@ -93,7 +73,7 @@ export default class VirtualizedList extends Component {
         )
     }
 
-    _loadTop = () => {
+    loadTop = () => {
         const start = this.state.endIndex
         this.setState({
             loading: true,
@@ -118,7 +98,7 @@ export default class VirtualizedList extends Component {
             })
     }
 
-    _loadBottom = () => {
+    loadBottom = () => {
         const start = Math.max(0, this.state.startIndex - this.props.batchSize)
         this.setState({
             loading: true,
@@ -138,10 +118,10 @@ export default class VirtualizedList extends Component {
     onScroll = ({ clientHeight, scrollHeight, scrollTop }) => {
         if (!this.state.loading) {
             if (scrollTop < this.props.threshold && this.state.endIndex < this.props.total) {
-                this._loadTop()
+                this.loadTop()
             }
             if (scrollHeight - scrollTop - clientHeight < this.props.threshold && this.state.startIndex > 0) {
-                this._loadBottom()
+                this.loadBottom()
             }
         }
     }

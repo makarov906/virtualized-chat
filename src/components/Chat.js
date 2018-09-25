@@ -1,9 +1,5 @@
 import React, { Component } from 'react'
-import Controller from '../controller'
-import { getMessages } from '../utils'
 import VirtualizedList from './VirtualizedList'
-
-const controller = new Controller()
 
 export default class extends Component {
     state = {
@@ -13,33 +9,41 @@ export default class extends Component {
     }
 
     goto = index => {
-        this.list.goto(index, controller.mapMessageToRow).then(() => {
-            this.setState(prevState => {
-                const newList =  prevState.list.map((m) => index === m.id ? ({
-                    ...m,
-                    isFocused: true,
-                }) : ({
-                    ...m,
-                    isFocused: false,
-                }))
-                return ({
-                    list: newList,
-                    markup: controller.createMarkup(newList),
-                });
+        if (!this.props.controller.hasRowFor(index)) {
+            this.list.initialize(index).then(() => {
+                this.highliteMessage(index)
             })
-        }).then(() => {
-            this.list.update()
+        } else {
+            this.highliteMessage(index)
+        }
+    }
+
+    highliteMessage = index => {
+        this.setState(prevState => {
+            const newList =  prevState.list.map((m) => index === m.id ? ({
+                ...m,
+                isFocused: true,
+            }) : ({
+                ...m,
+                isFocused: false,
+            }))
+            return ({
+                list: newList,
+                markup: this.props.controller.createMarkup(newList),
+            });
+        }, () => {
+            this.list.scrollTo(this.props.controller.getRowFor(index))
         })
     }
 
     fetchMore = (start, end, concatMessages) => {
-        return getMessages(start, end).then(({ messages, total }) => {
+        return this.props.fetch(start, end).then(({ messages, total }) => {
             this.setState(prevState => {
                 const newList = concatMessages(messages, prevState.list)
                 return ({
                     list: newList,
                     total,
-                    markup: controller.createMarkup(newList),
+                    markup: this.props.controller.createMarkup(newList),
                 });
             })
 

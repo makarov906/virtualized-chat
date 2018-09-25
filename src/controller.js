@@ -4,16 +4,36 @@ import Message from './components/Message'
 import Date from './components/Date'
 import UnreadLabel from './components/UnreadLabel'
 
-export default class Controller {
+class Controller {
+    hasRowFor() {
+        throw new Error('Controller:hasRowFor must be implemented')
+    }
+
+    getRowFor() {
+        throw new Error('Controller:getRowFor must be implemented')
+    }
+
+    createMarkup() {
+        throw new Error('Controller:createMarkup must be implemented')
+    }
+}
+
+export default class MessageController extends Controller {
     mapMessageToRow = {}
+
+    hasRowFor(index) {
+        return this.mapMessageToRow[index]
+    }
+
+    getRowFor(index) {
+        return this.mapMessageToRow[index]
+    }
 
     createMarkup(list) {
         const markup = []
         this.mapMessageToRow = {}
         let position = 0
-
         for (let i = 0; i < list.length; i++) {
-
             if (shouldAddDate(list[i - 1], list[i])) {
                 markup.push(<Date message={list[i]} />)
                 position++
@@ -29,7 +49,6 @@ export default class Controller {
             this.mapMessageToRow[list[i].id] = position
             position++
         }
-
         return markup
     }
 }
@@ -43,7 +62,7 @@ function shouldAddUnreadLabel(prev = {}, current = {}) {
 }
 
 function shouldAddAvatar(current = {}, next = {}) {
-    return (
+    return !(
         next.author === current.author &&
         moment(parseInt(next.time)).diff(moment(parseInt(current.time)), 'minutes') < 15
     )
