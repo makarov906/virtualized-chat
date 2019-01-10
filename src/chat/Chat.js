@@ -10,7 +10,7 @@ export default class extends Component {
 
     // public api
     goto = index => {
-        if (this.props.controller.hasRowFor(index)) {
+        if (this.props.hasRowFor(index)) {
             this.highliteMessageAndScroll(index)
         } else {
             this.list.initialize(index).then(() => {
@@ -30,10 +30,10 @@ export default class extends Component {
             }))
             return ({
                 list: newList,
-                markup: this.props.controller.createMarkup(newList),
+                markup: this.props.createMarkup(newList),
             });
         }, () => {
-            this.list.scrollTo(this.props.controller.getRowFor(index))
+            this.list.scrollTo(this.props.getRowFor(index))
         })
     }
 
@@ -44,7 +44,7 @@ export default class extends Component {
                 return ({
                     list: newList,
                     total,
-                    markup: this.props.controller.createMarkup(newList),
+                    markup: this.props.createMarkup(newList),
                 });
             })
 
@@ -53,21 +53,17 @@ export default class extends Component {
     }
 
     render() {
+        const { style } = this.props
         return (
-            <div>
-                <div style={{ border: '2px solid black', height: 'calc(100vh - 50px)' }}>
-                    <VirtualizedList
-                        startFrom={0}
-                        alignEnd
-                        fetchMore={this.fetchMore}
-                        ref={ref => (this.list = ref)}
-                        list={this.state.markup}
-                        total={this.state.total}
-                    />
-                </div>
-                <button onClick={() => this.goto(5)}>GOTO 5</button>
-                <button onClick={() => this.goto(10)}>GOTO 10</button>
-                <button onClick={() => this.goto(30)}>GOTO 30</button>
+            <div style={style}>
+                <VirtualizedList
+                    startFrom={0}
+                    alignEnd
+                    fetchMore={this.fetchMore}
+                    ref={ref => (this.list = ref)}
+                    list={this.state.markup}
+                    total={this.state.total}
+                />
             </div>
         )
     }

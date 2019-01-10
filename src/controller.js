@@ -4,32 +4,39 @@ import Message from './components/Message'
 import Date from './components/Date'
 import UnreadLabel from './components/UnreadLabel'
 
+class NotImplementedError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'NotImplementedError';
+    }
+}
+
 class Controller {
     hasRowFor() {
-        throw new Error('Controller:hasRowFor must be implemented')
+        throw new NotImplementedError('Controller:hasRowFor must be implemented')
     }
 
     getRowFor() {
-        throw new Error('Controller:getRowFor must be implemented')
+        throw new NotImplementedError('Controller:getRowFor must be implemented')
     }
 
     createMarkup() {
-        throw new Error('Controller:createMarkup must be implemented')
+        throw new NotImplementedError('Controller:createMarkup must be implemented')
     }
 }
 
 export default class MessageController extends Controller {
     mapMessageToRow = {}
 
-    hasRowFor(index) {
+    hasRowFor = index => {
         return this.mapMessageToRow[index]
     }
 
-    getRowFor(index) {
+    getRowFor = index => {
         return this.mapMessageToRow[index]
     }
 
-    createMarkup(list) {
+    createMarkup = list => {
         const markup = []
         this.mapMessageToRow = {}
         let position = 0

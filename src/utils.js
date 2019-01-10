@@ -9,6 +9,30 @@ const messages = [
         isRead: true,
     },
     {
+        author: 'BORDER',
+        text: '+++++++++++++++++++++++++ BORDER +++++++++++++++++++++++++++++++++++++',
+        time: times[0],
+        isRead: true,
+    },
+    {
+        author: 'BORDER',
+        text: '+++++++++++++++++++++++++ BORDER +++++++++++++++++++++++++++++++++++++',
+        time: times[0],
+        isRead: true,
+    },
+    {
+        author: 'BORDER',
+        text: '+++++++++++++++++++++++++ BORDER +++++++++++++++++++++++++++++++++++++',
+        time: times[0],
+        isRead: true,
+    },
+    {
+        author: 'BORDER',
+        text: '+++++++++++++++++++++++++ BORDER +++++++++++++++++++++++++++++++++++++',
+        time: times[0],
+        isRead: true,
+    },
+    {
         author: 'foo',
         text: 'foo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foofoo foo foo',
         time: times[0],
